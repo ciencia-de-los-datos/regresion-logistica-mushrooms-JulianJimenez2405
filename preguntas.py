@@ -63,23 +63,22 @@ def pregunta_01():
     """
     En esta función se realiza la carga de datos.
     """
+
     # Lea el archivo `mushrooms.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv('./mushrooms.csv')
-    
-    df.info()
+    df = pd.read_csv("mushrooms.csv")
 
     # Remueva la columna `veil-type` del DataFrame `df`.
     # Esta columna tiene un valor constante y no sirve para la detección de hongos.
-    df.drop(['veil_type'], axis=1, inplace = True)
-
+    df = df.drop(columns = ['veil_type'])
+     
     # Asigne la columna `type` a la variable `y`.
     y = df['type']
 
     # Asigne una copia del dataframe `df` a la variable `X`.
-    X = df.copy()
+    X = df.copy(deep=True)
 
     # Remueva la columna `type` del DataFrame `X`.
-    X.drop(['type'], axis=1, inplace = True)
+    X= X.drop(['type'], axis=1)
 
     # Retorne `X` y `y`
     return X, y
@@ -101,7 +100,7 @@ def pregunta_02():
     (X_train, X_test, y_train, y_test,) = train_test_split(
         X,
         y,
-        test_size=(50/len(X)),
+        test_size=50,
         random_state=123,
     )
 
@@ -122,23 +121,29 @@ def pregunta_03():
     # Importe LogisticRegressionCV
     # Importe OneHotEncoder
     # Importe Pipeline
+   
     from sklearn.linear_model import LogisticRegressionCV
     from sklearn.preprocessing import OneHotEncoder
     from sklearn.pipeline import Pipeline
-
+    
     # Cargue las variables.
-    X_train, _, y_train, _ = pregunta_02()
-
-    # Cree un pipeline que contenga un estimador OneHotEncoder y un estimador
-    # LogisticRegression con una regularización Cs=10
+    X_train, X_test, y_train, y_test = pregunta_02()
     
     pipeline = Pipeline(
         steps=[
-            ("OneHotEncoder", OneHotEncoder()),
-            ("LogisticRegressionCV", LogisticRegressionCV(Cs=10)),
-        ],)
-
-
+            ("oneHotEncoder", OneHotEncoder()),
+            ("logisticRegression", LogisticRegressionCV(Cs=10)),
+        ],
+    )
+    # Cree un pipeline que contenga un estimador OneHotEncoder y un estimador
+    # LogisticRegression con una regularización Cs=10
+    pipeline = Pipeline(
+        steps=[
+            ("oneHotEncoder", OneHotEncoder()),
+            ("logisticRegression", LogisticRegressionCV(Cs=10)),
+        ],
+    )
+ 
     # Entrene el pipeline con los datos de entrenamiento.
     pipeline.fit(X_train, y_train)
 
@@ -161,16 +166,17 @@ def pregunta_04():
     X_train, X_test, y_train, y_test = pregunta_02()
 
     # Evalúe el pipeline con los datos de entrenamiento usando la matriz de confusion.
+
     cfm_train = confusion_matrix(
         y_true=y_train,
         y_pred=pipeline.predict(X_train),
     )
 
-
     cfm_test = confusion_matrix(
         y_true=y_test,
         y_pred=pipeline.predict(X_test),
     )
+
 
     # Retorne la matriz de confusion de entrenamiento y prueba
     return cfm_train, cfm_test
