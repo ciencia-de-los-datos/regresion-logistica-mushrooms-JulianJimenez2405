@@ -12,7 +12,6 @@ comestibilidad desconocida deben ser asignados a la clase de hongos venenosos, y
 se puede correr el riesgo de dar un hongo potencialmente venenoso a una persona para su 
 consumo.
 
-
 Véase https://www.kaggle.com/uciml/mushroom-classification
 
 Evalue el modelo usando la matriz de confusión.
